@@ -15,12 +15,17 @@ export default async function handler(req, res) {
     const wallet = new ethers.Wallet(PRIVATE_KEY, provider);
     const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, provider);
 
-    // Call the function
-    const tx = await contract.connect(wallet).deployAssets();
-    await tx.wait();
+    let pendingAssets = await contract.connect(wallet).pendingDepositAssets();
+    let threshold = ethers.parseEther("4");
+    
+    if (pendingAssets >= threshold) {
+        // Call the function
+        const tx = await contract.connect(wallet).deployAssets();
+        await tx.wait();
+        console.log(`Transaction successful: ${tx.hash}`);
+        res.status(200).json({ success: true, txHash: tx.hash });
+    }
 
-    console.log(`Transaction successful: ${tx.hash}`);
-    res.status(200).json({ success: true, txHash: tx.hash });
   } catch (error) {
     console.error(`Error: ${error.message}`);
     res.status(500).json({ success: false, error: error.message });

@@ -13,10 +13,10 @@ export default async function handler(req, res) {
     // Set up ethers.js
     const provider = new ethers.JsonRpcProvider(RPC_URL);
     const wallet = new ethers.Wallet(PRIVATE_KEY, provider);
-    const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, wallet);
+    const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, provider);
 
     // Call the function
-    const tx = await contract.deployAssets();
+    const tx = await contract.connect(wallet).deployAssets();
     await tx.wait();
 
     console.log(`Transaction successful: ${tx.hash}`);

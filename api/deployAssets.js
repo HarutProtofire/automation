@@ -9,6 +9,7 @@ export default async function handler(req, res) {
     const CONTRACT_ADDRESS = process.env.CONTRACT_ADDRESS;
     const ABI = [
       "function deployAssets() public",
+      "function pendingDepositAssets() public",
     ];
 
     // Set up ethers.js
